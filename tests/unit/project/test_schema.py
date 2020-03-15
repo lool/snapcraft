@@ -1277,6 +1277,38 @@ class InvalidAppNamesYamlTest(ProjectBaseTest):
             "alphanumeric characters and hyphens",
         )
 
+    def test_invalid_yaml_invalid_second_app_name(self):
+        raised = self.assertValidationRaises(
+            dedent(
+                """\
+            name: test
+            base: core18
+            version: "1"
+            summary: test
+            description: nothing
+            confinement: strict
+            grade: stable
+
+            apps:
+              app1:
+                command: foo
+              app2.0:
+                command: foo
+
+            parts:
+              part1:
+                plugin: nil
+        """
+            ).format(self.name)
+        )
+
+        self.assertRegex(
+            raised.message,
+            "The 'apps' property does not match the required schema: app2.0 is "
+            "not a valid app name. App names consist of upper- and lower-case "
+            "alphanumeric characters and hyphens",
+        )
+
 
 class InvalidHookNamesYamlTest(ProjectBaseTest):
 
